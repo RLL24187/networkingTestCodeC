@@ -3,13 +3,13 @@ forking: client fserver
 select: sclient sserver
 
 sserver: select_server.o networking.o
-	gcc -o server select_server.o networking.o
+	gcc -o sserver select_server.o networking.o
 
 fserver: forking_server.o networking.o
 	gcc -o server forking_server.o networking.o
 
 sclient: select_client.o networking.o
-	gcc -o client select_client.o networking.o
+	gcc -o sclient select_client.o networking.o
 
 client: client.o networking.o
 	gcc -o client client.o networking.o
