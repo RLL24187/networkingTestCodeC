@@ -1,7 +1,7 @@
 #include "networking.h"
 
 void process(char *s);
-void subserver(int from_client);
+void subserver(int from_client, int readpipefd);
 
 int main() {
 
@@ -70,15 +70,13 @@ int main() {
 
      f = fork();
      if (f == 0){ //subserver
-       //create the connection for pipe allowing info going to client
-       //be the same info going to server
-       dup2(pipes[subserver_count][1], client_socket);
-       close(pipes[subserver_count][1]);
+       //create the connection for pipe allowing the same info going to server
+       close(pipes[subserver_count][0]); //close the read end
        printf("subserver[%d] has been initialized \n", subserver_count);
-       subserver(client_socket);
+       subserver(client_socket, pipes[subserver_count[1]]);
      }
      else { //main server
-       close(pipes[subserver_count][1]);
+       close(pipes[subserver_count][1]); //close the write end
        FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
        subserver_count++;
        close(client_socket);
@@ -104,7 +102,7 @@ int main() {
   }
 }
 
-void subserver(int client_socket) {
+void subserver(int client_socket, int readpipefd) {
   char buffer[BUFFER_SIZE];
 
   //for testing client select statement
@@ -116,6 +114,7 @@ void subserver(int client_socket) {
     printf("[subserver %d] received: [%s]\n", getpid(), buffer);
     process(buffer);
     write(client_socket, buffer, sizeof(buffer));
+    write(readpipefd, buffer, sizeof(buffer))
   }//end read loop
   close(client_socket);
   exit(0);
