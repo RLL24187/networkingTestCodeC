@@ -88,7 +88,7 @@ int main() {
     //if any of the pipes triggered select
     for (i = 0; i < subserver_count; i++){
       if (FD_ISSET(pipes[i][0], &read_fds)) {
-        read(pipes[i][0], *readbuffers[i], sizeof(*readbuffers[i]));
+        read(pipes[i][0], &readbuffers[i], sizeof(&readbuffers[i]));
         //read the data into the corresponding buffer
         printf("data received by subserver #%d: %s\n", i, readbuffers[i]);
       }
