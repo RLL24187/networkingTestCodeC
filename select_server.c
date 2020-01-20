@@ -72,7 +72,7 @@ int main() {
      if (f == 0){ //subserver
        //create the connection for pipe allowing info going to client
        //be the same info going to server
-       dup2(pipes[subserver_count][1], listen_socket);
+       dup2(pipes[subserver_count][1], client_socket);
        close(pipes[subserver_count][1]);
        printf("subserver[%d] has been initialized \n", subserver_count);
        subserver(client_socket);
