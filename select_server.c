@@ -15,40 +15,40 @@ int main() {
   fd_set read_fds;
 
   listen_socket = server_setup();
-  //
-  // //pipes to read from
-  // int ss0[2];
-  // int ss1[2];
-  // int ss2[2];
-  // int ss3[2];
-  //
-  // //array of pipes
-  // int *pipes[4] = {
-  //   ss0,
-  //   ss1,
-  //   ss2,
-  //   ss3
-  // };
-  //
-  // //piping the pipes
-  // pipe(ss0);
-  // pipe(ss1);
-  // pipe(ss2);
-  // pipe(ss3);
-  //
-  // //buffers to store information received from each subserver
-  // char buffer0[BUFFER_SIZE];
-  // char buffer1[BUFFER_SIZE];
-  // char buffer2[BUFFER_SIZE];
-  // char buffer3[BUFFER_SIZE];
-  //
-  // //array of buffers
-  // char *readbuffers[4] = {
-  //   buffer0,
-  //   buffer1,
-  //   buffer2,
-  //   buffer3
-  // };
+
+  //pipes to read from
+  int ss0[2];
+  int ss1[2];
+  int ss2[2];
+  int ss3[2];
+
+  //array of pipes
+  int *pipes[4] = {
+    ss0,
+    ss1,
+    ss2,
+    ss3
+  };
+
+  //piping the pipes
+  pipe(ss0);
+  pipe(ss1);
+  pipe(ss2);
+  pipe(ss3);
+
+  //buffers to store information received from each subserver
+  char buffer0[BUFFER_SIZE];
+  char buffer1[BUFFER_SIZE];
+  char buffer2[BUFFER_SIZE];
+  char buffer3[BUFFER_SIZE];
+
+  //array of buffers
+  char *readbuffers[4] = {
+    buffer0,
+    buffer1,
+    buffer2,
+    buffer3
+  };
 
   while (1) {
 
