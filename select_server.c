@@ -43,7 +43,7 @@ int main() {
   char buffer3[BUFFER_SIZE];
 
   //array of buffers
-  char *readbuffers[4] = {
+  char readbuffers[4][BUFFER_SIZE] = {
     buffer0,
     buffer1,
     buffer2,
@@ -74,11 +74,12 @@ int main() {
        //be the same info going to server
        dup2(pipes[subserver_count][1], client_socket);
        close(pipes[subserver_count][1]);
+       printf("subserver[%d] has been initialized \n", i);
        subserver(client_socket);
      }
      else { //main server
        close(pipes[subserver_count][1]);
-       FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
+       // FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
        subserver_count++;
        close(client_socket);
      }
