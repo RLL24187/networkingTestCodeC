@@ -57,9 +57,9 @@ int main() {
     FD_ZERO(&read_fds); //0 out fd set
     FD_SET(STDIN_FILENO, &read_fds); //add stdin to fd set
     FD_SET(listen_socket, &read_fds); //add socket to fd set
-    for (i = 0; i < subserver_count; i++){
-      FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
-    }//end read-end pipes select
+    // for (i = 0; i < subserver_count; i++){
+    //   FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
+    // }//end read-end pipes select
 
     //select will block until either fd is ready
     select(listen_socket + 1, &read_fds, NULL, NULL, NULL);
@@ -85,14 +85,14 @@ int main() {
      }
     }//end listen_socket select
 
-    //if any of the pipes triggered select
-    for (i = 0; i < subserver_count; i++){
-      if (FD_ISSET(pipes[i][0], &read_fds)) {
-        read(pipes[i][0], &readbuffers[i], sizeof(&readbuffers[i]));
-        //read the data into the corresponding buffer
-        printf("data received by subserver #%d: %s\n", i, readbuffers[i]);
-      }
-    }//end read-end pipes select
+    // //if any of the pipes triggered select
+    // for (i = 0; i < subserver_count; i++){
+    //   if (FD_ISSET(pipes[i][0], &read_fds)) {
+    //     read(pipes[i][0], &readbuffers[i], sizeof(&readbuffers[i]));
+    //     //read the data into the corresponding buffer
+    //     printf("data received by subserver #%d: %s\n", i, readbuffers[i]);
+    //   }
+    // }//end read-end pipes select
 
     //if stdin triggered select
     if (FD_ISSET(STDIN_FILENO, &read_fds)) {
