@@ -75,6 +75,7 @@ int main() {
        close(pipes[subserver_count][0]); //close the read end
        printf("subserver[%d] has been initialized \n", subserver_count);
        subserver(client_socket, pipes[subserver_count][1]);
+       printf("subserver function complete\n");
      }
      else { //main server
        close(pipes[subserver_count][1]); //close the write end
@@ -131,4 +132,5 @@ void process(char * s) {
       *s = ((*s - 'a') + 13) % 26 + 'a';
     s++;
   }
+  printf("process complete\n");
 }
