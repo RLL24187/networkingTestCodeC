@@ -74,7 +74,7 @@ int main() {
        //be the same info going to server
        dup2(pipes[subserver_count][1], client_socket);
        close(pipes[subserver_count][1]);
-       printf("subserver[%d] has been initialized \n", i);
+       printf("subserver[%d] has been initialized \n", subserver_count);
        subserver(client_socket);
      }
      else { //main server
