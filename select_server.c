@@ -15,40 +15,40 @@ int main() {
   fd_set read_fds;
 
   listen_socket = server_setup();
-
-  //pipes to read from
-  int ss0[2];
-  int ss1[2];
-  int ss2[2];
-  int ss3[2];
-
-  //array of pipes
-  int *pipes[4] = {
-    ss0,
-    ss1,
-    ss2,
-    ss3
-  };
-
-  //piping the pipes
-  pipe(ss0);
-  pipe(ss1);
-  pipe(ss2);
-  pipe(ss3);
-
-  //buffers to store information received from each subserver
-  char buffer0[BUFFER_SIZE];
-  char buffer1[BUFFER_SIZE];
-  char buffer2[BUFFER_SIZE];
-  char buffer3[BUFFER_SIZE];
-
-  //array of buffers
-  char *readbuffers[4] = {
-    buffer0,
-    buffer1,
-    buffer2,
-    buffer3
-  };
+  //
+  // //pipes to read from
+  // int ss0[2];
+  // int ss1[2];
+  // int ss2[2];
+  // int ss3[2];
+  //
+  // //array of pipes
+  // int *pipes[4] = {
+  //   ss0,
+  //   ss1,
+  //   ss2,
+  //   ss3
+  // };
+  //
+  // //piping the pipes
+  // pipe(ss0);
+  // pipe(ss1);
+  // pipe(ss2);
+  // pipe(ss3);
+  //
+  // //buffers to store information received from each subserver
+  // char buffer0[BUFFER_SIZE];
+  // char buffer1[BUFFER_SIZE];
+  // char buffer2[BUFFER_SIZE];
+  // char buffer3[BUFFER_SIZE];
+  //
+  // //array of buffers
+  // char *readbuffers[4] = {
+  //   buffer0,
+  //   buffer1,
+  //   buffer2,
+  //   buffer3
+  // };
 
   while (1) {
 
@@ -72,13 +72,13 @@ int main() {
      if (f == 0){ //subserver
        //create the connection for pipe allowing info going to client
        //be the same info going to server
-       dup2(pipes[subserver_count][1], client_socket);
-       close(pipes[subserver_count][1]);
+       // dup2(pipes[subserver_count][1], client_socket);
+       // close(pipes[subserver_count][1]);
        printf("subserver[%d] has been initialized \n", i);
        subserver(client_socket);
      }
      else { //main server
-       close(pipes[subserver_count][1]);
+       // close(pipes[subserver_count][1]);
        // FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
        subserver_count++;
        close(client_socket);
