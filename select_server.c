@@ -72,14 +72,14 @@ int main() {
      if (f == 0){ //subserver
        //create the connection for pipe allowing info going to client
        //be the same info going to server
-       // dup2(pipes[subserver_count][1], client_socket);
-       // close(pipes[subserver_count][1]);
+       dup2(pipes[subserver_count][1], listen_socket);
+       close(pipes[subserver_count][1]);
        printf("subserver[%d] has been initialized \n", subserver_count);
        subserver(client_socket);
      }
      else { //main server
-       // close(pipes[subserver_count][1]);
-       // FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
+       close(pipes[subserver_count][1]);
+       FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
        subserver_count++;
        close(client_socket);
      }
