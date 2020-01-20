@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     printf("enter your username: ");
     //the above printf does not have \n
     //flush the buffer to immediately print
-    fflush(stdout);
+    // fflush(stdout);
 
     //select() modifies read_fds
     //we must reset it at each iteration
