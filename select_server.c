@@ -59,6 +59,7 @@ int main() {
     FD_SET(listen_socket, &read_fds); //add socket to fd set
     for (i = 0; i < subserver_count; i++){
       FD_SET(pipes[i][0], &read_fds); //add the read end of the pipe to fd set
+      printf("set pipe[%d][0]\n", i);
     }
 
     //select will block until either fd is ready
