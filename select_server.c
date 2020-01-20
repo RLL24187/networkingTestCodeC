@@ -23,7 +23,7 @@ int main() {
   int ss3[2];
 
   //array of pipes
-  int *pipes[2] = {
+  int *pipes[4] = {
     ss0,
     ss1,
     ss2,
@@ -43,7 +43,7 @@ int main() {
   char buffer3[BUFFER_SIZE];
 
   //array of buffers
-  char *readbuffers[BUFFER_SIZE] = {
+  char *readbuffers[4] = {
     buffer0,
     buffer1,
     buffer2,
