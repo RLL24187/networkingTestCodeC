@@ -73,7 +73,7 @@ int main() {
        //create the connection for pipe allowing the same info going to server
        close(pipes[subserver_count][0]); //close the read end
        printf("subserver[%d] has been initialized \n", subserver_count);
-       subserver(client_socket, pipes[subserver_count][1]]);
+       subserver(client_socket, pipes[subserver_count][1]);
      }
      else { //main server
        close(pipes[subserver_count][1]); //close the write end
