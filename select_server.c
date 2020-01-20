@@ -28,7 +28,7 @@ int main() {
     ss1,
     ss2,
     ss3
-  }
+  };
 
   //piping the pipes
   pipe(ss0);
