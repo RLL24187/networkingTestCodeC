@@ -1,7 +1,7 @@
 #include "networking.h"
 
 void process(char *s);
-void subserver(int from_client, int readpipefd);
+void subserver(int from_client, int writepipefd);
 
 int main() {
 
@@ -102,12 +102,12 @@ int main() {
   }
 }
 
-void subserver(int client_socket, int readpipefd) {
+void subserver(int client_socket, int writepipefd) {
   char buffer[BUFFER_SIZE];
 
   //for testing client select statement
-  strncpy(buffer, "hello client", sizeof(buffer));
-  write(client_socket, buffer, sizeof(buffer));
+  // strncpy(buffer, "hello client", sizeof(buffer));
+  // write(client_socket, buffer, sizeof(buffer));
 
   while (read(client_socket, buffer, sizeof(buffer))) {
 
