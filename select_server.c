@@ -57,6 +57,9 @@ int main() {
     FD_ZERO(&read_fds); //0 out fd set
     FD_SET(STDIN_FILENO, &read_fds); //add stdin to fd set
     FD_SET(listen_socket, &read_fds); //add socket to fd set
+    for (i = 0; i < subserver_count; i++){
+      FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
+    }//end read-end pipes select
 
     //select will block until either fd is ready
     select(listen_socket + 1, &read_fds, NULL, NULL, NULL);
