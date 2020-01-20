@@ -114,7 +114,7 @@ void subserver(int client_socket, int readpipefd) {
     printf("[subserver %d] received: [%s]\n", getpid(), buffer);
     process(buffer);
     write(client_socket, buffer, sizeof(buffer));
-    write(readpipefd, buffer, sizeof(buffer))
+    write(readpipefd, buffer, sizeof(buffer));
   }//end read loop
   close(client_socket);
   exit(0);
