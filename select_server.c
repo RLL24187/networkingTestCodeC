@@ -7,7 +7,7 @@ int main() {
 
   int listen_socket;
   int client_socket;
-  int f;
+  int f, i;
   int subserver_count = 0;
   char buffer[BUFFER_SIZE];
 
@@ -15,6 +15,40 @@ int main() {
   fd_set read_fds;
 
   listen_socket = server_setup();
+
+  //pipes to read from
+  int ss0[2];
+  int ss1[2];
+  int ss2[2];
+  int ss3[2];
+
+  //array of pipes
+  int *pipes[2] = {
+    ss0,
+    ss1,
+    ss2,
+    ss3
+  }
+
+  //piping the pipes
+  pipe(ss0);
+  pipe(ss1);
+  pipe(ss2);
+  pipe(ss3);
+
+  //buffers to store information received from each subserver
+  char buffer0[BUFFER_SIZE];
+  char buffer1[BUFFER_SIZE];
+  char buffer2[BUFFER_SIZE];
+  char buffer3[BUFFER_SIZE];
+
+  //array of buffers
+  char *readbuffers[BUFFER_SIZE] = {
+    buffer0,
+    buffer1,
+    buffer2,
+    buffer3
+  };
 
   while (1) {
 
@@ -32,13 +66,29 @@ int main() {
      client_socket = server_connect(listen_socket);
 
      f = fork();
-     if (f == 0)
+     if (f == 0){ //subserver
+       //create the connection for pipe allowing info going to client
+       //be the same info going to server
+       dup2(pipes[subserver_count][1], client_socket);
+       close(pipes[subserver_count][1]);
        subserver(client_socket);
-     else {
+     }
+     else { //main server
+       close(pipes[subserver_count][1]);
+       FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
        subserver_count++;
        close(client_socket);
      }
     }//end listen_socket select
+
+    //if any of the pipes triggered select
+    for (i = 0; i < subserver_count; i++){
+      if (FD_ISSET(pipes[i][0]), &read_fds) {
+        read(pipes[i][0], readbuffers[i], sizeof(readbuffers[i]));
+        //read the data into the corresponding buffer
+        printf("data received by subserver #%d: %s\n", i, readbuffers[i]);
+      }
+    }//end read-end pipes select
 
     //if stdin triggered select
     if (FD_ISSET(STDIN_FILENO, &read_fds)) {
@@ -46,6 +96,7 @@ int main() {
       fgets(buffer, sizeof(buffer), stdin);
       printf("[server] subserver count: %d\n", subserver_count);
     }//end stdin select
+
   }
 }
 

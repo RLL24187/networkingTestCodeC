@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 
   while (1) {
 
-    printf("enter data: ");
+    printf("enter your username: ");
     //the above printf does not have \n
     //flush the buffer to immediately print
     fflush(stdout);
