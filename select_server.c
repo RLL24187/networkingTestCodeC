@@ -1,7 +1,8 @@
 #include "networking.h"
 
 void process(char *s);
-void subserver(int from_client, int writepipefd);
+int cmpfunc(const void * a, const void * b);
+void subserver(int from_client, int writepipefd, int readpipefd);
 
 int main() {
 
@@ -17,37 +18,70 @@ int main() {
   listen_socket = server_setup();
 
   //pipes to read from
-  int ss0[2];
-  int ss1[2];
-  int ss2[2];
-  int ss3[2];
+  int rss0[2];
+  int rss1[2];
+  int rss2[2];
+  int rss3[2];
 
-  //array of pipes
-  int *pipes[4] = {
-    ss0,
-    ss1,
-    ss2,
-    ss3
+  //pipes to write to
+  int wss0[2];
+  int wss1[2];
+  int wss2[2];
+  int wss3[2];
+
+  //array of pipes to read from
+  int *server_read_pipes[4] = {
+    rss0,
+    rss1,
+    rss2,
+    rss3
+  };
+
+  //array of pipes to read from
+  int *server_write_pipes[4] = {
+    wss0,
+    wss1,
+    wss2,
+    wss3
   };
 
   //piping the pipes
-  pipe(ss0);
-  pipe(ss1);
-  pipe(ss2);
-  pipe(ss3);
+  pipe(rss0);
+  pipe(rss1);
+  pipe(rss2);
+  pipe(rss3);
+
+  pipe(wss0);
+  pipe(wss1);
+  pipe(wss2);
+  pipe(wss3);
 
   //buffers to store information received from each subserver
-  char buffer0[BUFFER_SIZE];
-  char buffer1[BUFFER_SIZE];
-  char buffer2[BUFFER_SIZE];
-  char buffer3[BUFFER_SIZE];
+  char rb0[BUFFER_SIZE];
+  char rb1[BUFFER_SIZE];
+  char rb2[BUFFER_SIZE];
+  char rb3[BUFFER_SIZE];
 
-  //array of buffers
+  //buffers to store information to write to each subserver
+  char wb0[BUFFER_SIZE];
+  char wb1[BUFFER_SIZE];
+  char wb2[BUFFER_SIZE];
+  char wb3[BUFFER_SIZE];
+
+  //array of buffers for reading from subservers
   char *readbuffers[4] = {
-    buffer0,
-    buffer1,
-    buffer2,
-    buffer3
+    rb0,
+    rb1,
+    rb2,
+    rb3
+  };
+
+  //array of buffers for writing to subservers
+  char *writebuffers[4] = {
+    wb0,
+    wb1,
+    wb2,
+    wb3
   };
 
   while (1) {
@@ -73,13 +107,15 @@ int main() {
      f = fork();
      if (f == 0){ //subserver
        //create the connection for pipe allowing the same info going to server
-       close(pipes[subserver_count][0]); //close the read end
+       close(server_read_pipes[subserver_count][0]); //close the read end of pipe for server to read from
+       close(server_write_pipes[subserver_count][1]); //close the write end of pipe for server to write to
        printf("subserver[%d] has been initialized \n", subserver_count);
-       subserver(client_socket, pipes[subserver_count][1]);
+       subserver(client_socket, server_read_pipes[subserver_count][1], server_write_pipes[subserver_count][0]);
        printf("subserver function complete\n");
      }
      else { //main server
-       close(pipes[subserver_count][1]); //close the write end
+       close(server_read_pipes[subserver_count][1]); //close the write end of pipe for server to read from
+       close(server_write_pipes[subserver_count][0]); //close read end of pipe for server to write to
        printf("subserver count before ++: %d\n", subserver_count);
        printf("closed the write end in parent\n");
        // FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
@@ -93,14 +129,39 @@ int main() {
     //if any of the pipes triggered select
     for (i = 0; i < subserver_count; i++){
       // if (FD_ISSET(pipes[i][0], &read_fds)) {
-        printf("trying to access pipes[%d][0]\n", i); //gets stuck here
-        read(pipes[i][0], readbuffers[i], sizeof(readbuffers[i]));
+        printf("trying to read from server_read_pipes[%d][0]\n", i); //gets stuck here
+        read(server_read_pipes[i][0], readbuffers[i], sizeof(readbuffers[i]));
         //read the data into the corresponding buffer
         printf("data received from subserver #%d: %s\n", i, readbuffers[i]);
-        // }
-      }//end read-end pipes select
-      // printf("end read-end pipes select\n");
+      // }
+    }//end read-end pipes select
+    // printf("end read-end pipes select\n");
 
+    int cmpfunc (const void * a, const void * b) {
+      return ( *(int*)a - *(int*)b );
+    }
+
+    printf("Before sorting the list is: \n");
+    for( i = 0 ; i < subserver_count; i++ ) {
+      printf("%d ", readbuffers[i]);
+    }
+
+    qsort(readbuffers, subserver_count, BUFFER_SIZE, cmpfunc);
+
+    printf("\nAfter sorting the list is: \n");
+    for( i = 0 ; i < subserver_count; i++ ) {
+      printf("readbuffers[%d]: %s\n", i, readbuffers[i]);
+      strcpy(writebuffers[i], strcat(readbuffers[i], i));
+      printf("writebuffers[%d]: %s\n", i, writebuffers[i]);
+    }
+
+    //loop through again to broadcast information
+    for (i = 0; i < subserver_count; i++){
+      printf("trying to write to server_write_pipes[%d][1]\n", i); //gets stuck here
+      write(server_read_pipes[i][1], writebuffers[i], sizeof(writebuffers[i]));
+      //read the data into the corresponding buffer
+      printf("data sent to subserver #%d: %s\n", i, writebuffers[i]);
+    }
 
     //if stdin triggered select
     // if (FD_ISSET(STDIN_FILENO, &read_fds)) {
@@ -112,7 +173,7 @@ int main() {
   }
 }
 
-void subserver(int client_socket, int writepipefd) {
+void subserver(int client_socket, int writepipefd, int readpipefd) {
   char buffer[BUFFER_SIZE];
 
   //for testing client select statement
@@ -127,6 +188,8 @@ void subserver(int client_socket, int writepipefd) {
     printf("wrote to client socket\n");
     write(writepipefd, buffer, sizeof(buffer));
     printf("wrote '%s' to write end of pipe\n", buffer);
+    read(readpipefd, buffer, sizeof(buffer));
+    printf("Information received: %s\n", buffer);
   }//end read loop
   close(client_socket);
   exit(0);
