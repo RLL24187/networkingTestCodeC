@@ -157,7 +157,7 @@ int main() {
     printf("\nAfter sorting the list is: \n");
     for( i = 0 ; i < subserver_count; i++ ) {
       printf("readbuffers[%d]: %s\n", i, readbuffers[i]);
-      strcpy(buffer, strcat(readbuffers[i], positions[i]);
+      strcpy(buffer, strcat(readbuffers[i], positions[i]));
       strcpy(writebuffers[i], buffer);
       printf("writebuffers[%d]: %s\n", i, writebuffers[i]);
     }
