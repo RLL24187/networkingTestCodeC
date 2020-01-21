@@ -68,6 +68,17 @@ int main() {
     // printf("after select...\n");
     //if listen_socket triggered select
     // if (FD_ISSET(listen_socket, &read_fds)) {
+    printf("past the fork, looping through the pipes\n");
+    //if any of the pipes triggered select
+    for (i = 0; i < subserver_count; i++){
+      // if (FD_ISSET(pipes[i][0], &read_fds)) {
+        printf("trying to access pipes[%d][0]\n", i); //gets stuck here
+        read(pipes[i][0], readbuffers[i], sizeof(readbuffers[i]));
+        //read the data into the corresponding buffer
+        printf("data received from subserver #%d: %s\n", i, readbuffers[i]);
+        // }
+      }//end read-end pipes select
+      // printf("end read-end pipes select\n");
      client_socket = server_connect(listen_socket);
 
      f = fork();
@@ -90,17 +101,6 @@ int main() {
     //end listen_socket select
     // printf("end listen socket select\n");
 
-    printf("past the fork, looping through the pipes\n");
-    //if any of the pipes triggered select
-    for (i = 0; i < subserver_count; i++){
-      // if (FD_ISSET(pipes[i][0], &read_fds)) {
-        printf("trying to access pipes[%d][0]\n", i); //gets stuck here
-        read(pipes[i][0], readbuffers[i], sizeof(readbuffers[i]));
-        //read the data into the corresponding buffer
-        printf("data received from subserver #%d: %s\n", i, readbuffers[i]);
-        // }
-    }//end read-end pipes select
-      // printf("end read-end pipes select\n");
 
     //if stdin triggered select
     // if (FD_ISSET(STDIN_FILENO, &read_fds)) {
