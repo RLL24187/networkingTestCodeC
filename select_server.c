@@ -85,10 +85,10 @@ int main() {
   };
 
   char positions[4][BUFFER_SIZE] = {
-    "1st",
-    "2nd",
-    "3rd",
-    "4th"
+    ": 1st",
+    ": 2nd",
+    ": 3rd",
+    ": 4th"
   };
   while (1) {
 
@@ -192,7 +192,7 @@ void subserver(int client_socket, int writepipefd, int readpipefd) {
     printf("[subserver %d] received: [%s]\n", getpid(), buffer);
     process(buffer);
     write(client_socket, buffer, sizeof(buffer));
-    printf("wrote to client socket\n");
+    printf("wrote '%s' to client socket\n", buffer);
     write(writepipefd, buffer, sizeof(buffer));
     printf("wrote '%s' to write end of pipe\n", buffer);
     read(readpipefd, buffer, sizeof(buffer));
