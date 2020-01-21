@@ -54,20 +54,20 @@ int main() {
 
     //select() modifies read_fds
     //we must reset it at each iteration
-    printf("reseting fds\n");
-    FD_ZERO(&read_fds); //0 out fd set
-    FD_SET(STDIN_FILENO, &read_fds); //add stdin to fd set
-    FD_SET(listen_socket, &read_fds); //add socket to fd set
-    for (i = 0; i < subserver_count; i++){
-      FD_SET(pipes[i][0], &read_fds); //add the read end of the pipe to fd set
-      printf("set pipe[%d][0]\n", i);
-    }
-    printf("select is happening\n");
-    //select will block until either fd is ready
-    select(listen_socket + 1, &read_fds, NULL, NULL, NULL);
-    printf("after select...\n");
+    // printf("reseting fds\n");
+    // FD_ZERO(&read_fds); //0 out fd set
+    // FD_SET(STDIN_FILENO, &read_fds); //add stdin to fd set
+    // FD_SET(listen_socket, &read_fds); //add socket to fd set
+    // for (i = 0; i < subserver_count; i++){
+    //   FD_SET(pipes[i][0], &read_fds); //add the read end of the pipe to fd set
+    //   printf("set pipe[%d][0]\n", i);
+    // }
+    // printf("select is happening\n");
+    // //select will block until either fd is ready
+    // select(listen_socket + 1, &read_fds, NULL, NULL, NULL);
+    // printf("after select...\n");
     //if listen_socket triggered select
-    if (FD_ISSET(listen_socket, &read_fds)) {
+    // if (FD_ISSET(listen_socket, &read_fds)) {
      client_socket = server_connect(listen_socket);
 
      f = fork();
@@ -97,18 +97,18 @@ int main() {
         printf("trying to access pipes[%d][0]\n", i); //gets stuck here
         read(pipes[i][0], readbuffers[i], sizeof(readbuffers[i]));
         //read the data into the corresponding buffer
-        printf("data received by subserver #%d: %s\n", i, readbuffers[i]);
+        printf("data received from subserver #%d: %s\n", i, readbuffers[i]);
         // }
       }//end read-end pipes select
       // printf("end read-end pipes select\n");
 
     //if stdin triggered select
-    if (FD_ISSET(STDIN_FILENO, &read_fds)) {
-      //if you don't read from stdin, it will continue to trigger select()
-      fgets(buffer, sizeof(buffer), stdin);
-      printf("[server] subserver count: %d\n", subserver_count);
-    }//end stdin select
-    printf("end stdin select\n");
+    // if (FD_ISSET(STDIN_FILENO, &read_fds)) {
+    //   //if you don't read from stdin, it will continue to trigger select()
+    //   fgets(buffer, sizeof(buffer), stdin);
+    //   printf("[server] subserver count: %d\n", subserver_count);
+    // }//end stdin select
+    // printf("end stdin select\n");
   }
 }
 
