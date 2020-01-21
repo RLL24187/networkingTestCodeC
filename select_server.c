@@ -196,7 +196,7 @@ void subserver(int client_socket, int writepipefd, int readpipefd) {
     printf("wrote '%s' to client socket\n", buffer);
     write(writepipefd, buffer, sizeof(buffer));
     printf("wrote '%s' to write end of pipe\n", buffer);
-    if(read(readpipefd, buffer, sizeof(buffer)){
+    if(read(readpipefd, buffer, sizeof(buffer))){
       printf("Information received: %s\n", buffer);
     }
   }//end read loop
