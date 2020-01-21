@@ -89,9 +89,11 @@ int main() {
      }
     }//end listen_socket select
 
+    printf("past the fork, looping through the pipes\n");
     //if any of the pipes triggered select
     for (i = 0; i < subserver_count; i++){
       if (FD_ISSET(pipes[i][0], &read_fds)) {
+        printf("trying to access pipes[%d][0]\n", i);
         read(pipes[i][0], &readbuffers[i], sizeof(&readbuffers[i]));
         //read the data into the corresponding buffer
         printf("data received by subserver #%d: %s\n", i, readbuffers[i]);
