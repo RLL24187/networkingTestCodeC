@@ -87,7 +87,7 @@ int main() {
        subserver_count++;
        close(client_socket);
      }
-    }//end listen_socket select
+    //end listen_socket select
     printf("end listen socket select\n");
 
     printf("past the fork, looping through the pipes\n");
@@ -99,7 +99,7 @@ int main() {
         //read the data into the corresponding buffer
         printf("data received from subserver #%d: %s\n", i, readbuffers[i]);
         // }
-      }//end read-end pipes select
+    }//end read-end pipes select
       // printf("end read-end pipes select\n");
 
     //if stdin triggered select
