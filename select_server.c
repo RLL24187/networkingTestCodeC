@@ -166,7 +166,7 @@ int main() {
     //loop through again to broadcast information
     for (i = 0; i < subserver_count; i++){
       printf("trying to write to server_write_pipes[%d][1]\n", i); //gets stuck here
-      write(server_read_pipes[i][1], writebuffers[i], sizeof(writebuffers[i]));
+      write(server_write_pipes[i][1], writebuffers[i], sizeof(writebuffers[i]));
       //read the data into the corresponding buffer
       printf("data sent to subserver #%d: %s\n", i, writebuffers[i]);
     }
