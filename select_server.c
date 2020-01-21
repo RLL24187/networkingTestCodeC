@@ -54,6 +54,7 @@ int main() {
 
     //select() modifies read_fds
     //we must reset it at each iteration
+    printf("reseting fds\n");
     FD_ZERO(&read_fds); //0 out fd set
     FD_SET(STDIN_FILENO, &read_fds); //add stdin to fd set
     FD_SET(listen_socket, &read_fds); //add socket to fd set
