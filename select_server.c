@@ -84,6 +84,12 @@ int main() {
     wb3
   };
 
+  char positions[4][BUFFER_SIZE] = {
+    "1st",
+    "2nd",
+    "3rd",
+    "4th"
+  };
   while (1) {
 
     //select() modifies read_fds
@@ -151,7 +157,8 @@ int main() {
     printf("\nAfter sorting the list is: \n");
     for( i = 0 ; i < subserver_count; i++ ) {
       printf("readbuffers[%d]: %s\n", i, readbuffers[i]);
-      strcpy(writebuffers[i], strcat(readbuffers[i], &i));
+      buffer = strcat(readbuffers[i], positions[i]);
+      strcpy(writebuffers[i], buffer);
       printf("writebuffers[%d]: %s\n", i, writebuffers[i]);
     }
 
