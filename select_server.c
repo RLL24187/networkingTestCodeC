@@ -143,7 +143,7 @@ int main() {
 
     printf("Before sorting the list is: \n");
     for( i = 0 ; i < subserver_count; i++ ) {
-      printf("%d ", readbuffers[i]);
+      printf("%s\n", readbuffers[i]);
     }
 
     qsort(readbuffers, subserver_count, BUFFER_SIZE, cmpfunc);
@@ -151,7 +151,7 @@ int main() {
     printf("\nAfter sorting the list is: \n");
     for( i = 0 ; i < subserver_count; i++ ) {
       printf("readbuffers[%d]: %s\n", i, readbuffers[i]);
-      strcpy(writebuffers[i], strcat(readbuffers[i], i));
+      strcpy(writebuffers[i], strcat(readbuffers[i], &i));
       printf("writebuffers[%d]: %s\n", i, writebuffers[i]);
     }
 
