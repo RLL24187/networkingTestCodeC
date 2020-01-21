@@ -62,10 +62,10 @@ int main() {
       FD_SET(pipes[i][0], &read_fds); //add the read end of the pipe to fd set
       printf("set pipe[%d][0]\n", i);
     }
-
+    printf("select is happening\n");
     //select will block until either fd is ready
     select(listen_socket + 1, &read_fds, NULL, NULL, NULL);
-
+    printf("after select...\n");
     //if listen_socket triggered select
     if (FD_ISSET(listen_socket, &read_fds)) {
      client_socket = server_connect(listen_socket);
@@ -88,6 +88,7 @@ int main() {
        close(client_socket);
      }
     }//end listen_socket select
+    printf("end listen socket select\n");
 
     printf("past the fork, looping through the pipes\n");
     //if any of the pipes triggered select
@@ -99,6 +100,7 @@ int main() {
         printf("data received by subserver #%d: %s\n", i, readbuffers[i]);
       }
     }//end read-end pipes select
+    printf("end read-end pipes select\n");
 
     //if stdin triggered select
     if (FD_ISSET(STDIN_FILENO, &read_fds)) {
@@ -106,7 +108,7 @@ int main() {
       fgets(buffer, sizeof(buffer), stdin);
       printf("[server] subserver count: %d\n", subserver_count);
     }//end stdin select
-
+    printf("end stdin select\n");
   }
 }
 
