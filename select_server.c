@@ -113,8 +113,8 @@ int main() {
      f = fork();
      if (f == 0){ //subserver
        //create the connection for pipe allowing the same info going to server
-       close(server_read_pipes[subserver_count][0]); //close the read end of pipe for server to read from
-       close(server_write_pipes[subserver_count][1]); //close the write end of pipe for server to write to
+       close(server_read_pipes[subserver_count][0]); //close the read end of pipe for subserver to read from
+       close(server_write_pipes[subserver_count][1]); //close the write end of pipe for subserver to write to
        printf("subserver[%d] has been initialized \n", subserver_count);
        subserver(client_socket, server_read_pipes[subserver_count][1], server_write_pipes[subserver_count][0]);
        printf("subserver function complete\n");
@@ -136,9 +136,10 @@ int main() {
     for (i = 0; i < subserver_count; i++){
       // if (FD_ISSET(pipes[i][0], &read_fds)) {
         printf("trying to read from server_read_pipes[%d][0]\n", i); //gets stuck here
-        read(server_read_pipes[i][0], readbuffers[i], sizeof(readbuffers[i]));
-        //read the data into the corresponding buffer
-        printf("data received from subserver #%d: %s\n", i, readbuffers[i]);
+        if(read(server_read_pipes[i][0], readbuffers[i], sizeof(readbuffers[i]))){
+          //read the data into the corresponding buffer
+          printf("data received from subserver #%d: %s\n", i, readbuffers[i]);
+        }
       // }
     }//end read-end pipes select
     // printf("end read-end pipes select\n");
