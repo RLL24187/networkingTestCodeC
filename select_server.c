@@ -82,13 +82,13 @@ int main() {
        close(pipes[subserver_count][1]); //close the write end
        printf("subserver count before ++: %d\n", subserver_count);
        printf("closed the write end in parent\n");
-       FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
-       printf("added the read end of the pipe in parent\n");
+       // FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
+       // printf("added the read end of the pipe in parent\n");
        subserver_count++;
        close(client_socket);
      }
     //end listen_socket select
-    printf("end listen socket select\n");
+    // printf("end listen socket select\n");
 
     printf("past the fork, looping through the pipes\n");
     //if any of the pipes triggered select
