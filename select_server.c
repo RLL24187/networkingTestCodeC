@@ -80,9 +80,9 @@ int main() {
      else { //main server
        close(pipes[subserver_count][1]); //close the write end
        printf("subserver count before ++: %d\n", subserver_count);
-       printf("closed the write end in parent\n", );
+       printf("closed the write end in parent\n");
        FD_SET(pipes[subserver_count][0], &read_fds); //add the read end of the pipe to fd set
-       printf("added the read end of the pipe in parent\n", );
+       printf("added the read end of the pipe in parent\n");
        subserver_count++;
        close(client_socket);
      }
